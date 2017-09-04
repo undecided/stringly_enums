@@ -56,16 +56,17 @@ Assuming you've created an indexed string field on your model, called status, an
 
 ```
 
-The gem can also be configured site-wide, e.g. in an initializer, as follows:
-
-```
-  StringlyEnum.configure do |config| # ... config used as above
-```
 
 ## V2 TODO
 
+- assuming string storage, always return symbols
 - An easy way to switch name / number (e.g. subject.status_int)
 - A way to search by number (e.g. subject.where_status_above / where_status_below / where_status_between / where_status {|s| s.even? })
+- The gem should be configurable site-wide, e.g. in an initializer, as follows:
+
+```
+StringlyEnum.configure do |config| # ... config used as above
+```
 
 
 ## Development
