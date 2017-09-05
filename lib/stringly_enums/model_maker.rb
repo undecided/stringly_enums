@@ -27,7 +27,7 @@ module StringlyEnums
       stored_values = [method, aliases].flatten
 
       klass.instance_eval do
-        scope field, -> { where(field: stored_values) } if config.scopes
+        scope method, -> { where(field => stored_values) } if config.scopes
 
         if config.boolean_getters
           define_method "#{method}?" do
@@ -43,7 +43,7 @@ module StringlyEnums
         end
 
         # Not particularly efficient, if it even works...
-        if config.accessor && new.respond_to?(:"#{field}=") # Subverts rails lazy-loader 
+        if config.accessor && new.respond_to?(:"#{field}=") # Subverts rails lazy-loader
           old_method = instance_method(:"#{field}=")
           define_method(:"#{field}=") do |item|
             return old_method.bind(self).call(method) if item == int

@@ -4,6 +4,16 @@ class DummyModel
   attr_accessor :status
 
   def self.scope(*args)
+    @@scopes ||= []
+    @@scopes << args
+  end
+
+  def self.fetch_scopes
+    @@scopes
+  end
+
+  def self.reset_scopes
+    @@scopes = nil
   end
 
   def save
@@ -22,6 +32,11 @@ describe StringlyEnums do
 
   context 'simple version' do
     before do
+      expect(DummyModel).to receive(:scope).at_least(:once) do |field, fn|
+        expect([:first, :second, :third, :fourth]).to include(field)
+        expect(fn.arity).to be 0
+      end
+
       dummy_class.class_eval do
         stringly_enum status: [:first, :second, :third, :fourth]
       end
@@ -47,9 +62,12 @@ describe StringlyEnums do
 
 
   context 'simple version with config' do
-    # TODO: Test scopes
-    # { scopes: [->(subject) {}]}
-    { boolean_getters: [
+    {
+      scopes: [
+        ->(_) { expect(subject.class.fetch_scopes).to_not eq nil },
+        ->(_) { expect(subject.class.fetch_scopes).to eq nil }
+      ],
+      boolean_getters: [
         ->(_) { expect(subject).to respond_to :first? },
         ->(_) { expect(subject).to_not respond_to :first? }
       ],
@@ -78,6 +96,7 @@ describe StringlyEnums do
     }.each_pair do |config_key, (when_true, when_false)|
       context "when #{config_key} is true" do
         before do
+          dummy_class.reset_scopes
           dummy_class.class_eval do
             stringly_enum(
               {status: [:first, :second, :third, :fourth]},
@@ -90,6 +109,7 @@ describe StringlyEnums do
 
       context "when #{config_key} is false" do
         before do
+          dummy_class.reset_scopes
           dummy_class.class_eval do
             stringly_enum(
               {status: [:first, :second, :third, :fourth]},
