@@ -39,13 +39,20 @@ Assuming you've created an indexed string field on your model, called status, an
     # it's quite self-documenting. Any grep that finds one of these lines
     # instantly knows what field and enum it refers to. Nice, huh?
     # The config below can be used in the config hashes above
-    # Please note: currently, order matters - define your config first.
-    config.scopes = false          # model.class.first
-    config.boolean_getters = false # model.first?
-    config.bang_setters = false    # model.first!
-    config.save_after_bang = false # model.first! => self.status = :first; save
-    config.accessor = false        # model.status = 1
-    config.disable_all_metaprogramming!  # Turns off all of the above
+    # Please note: currently, in block-based config, order matters -
+    # if you don't define your config first, it won't be seen.
+    config.scopes = false            # model.class.first
+
+    config.values_name = "%s_values"   # any value the field can be set to
+                                       # useful in validations - false to disable
+    config.options_name = "%s_options" # any value the field should be set to
+                                       # useful in drop-downs - false to disable
+
+    config.boolean_getters = false   # model.first?
+    config.bang_setters = false      # model.first!
+    config.save_after_bang = false   # model.first! => self.status = :first; save
+    config.accessor = false          # model.status = 1
+    config.disable_all_metaprogramming! # Turns off all of the above
     config.enable_all_metaprogramming!  # Turns on all of the above (the default)
     config.prefix_methods = true   # model.status_first?
     status.first int: 0, stored_as: '1st' # new values will be stored as 'first'
@@ -58,7 +65,7 @@ Assuming you've created an indexed string field on your model, called status, an
 
 
 ## V2 TODO
-
+- where can I get all the valid statuses?
 - assuming string storage, always return symbols
 - An easy way to switch name / number (e.g. subject.status_int)
 - A way to search by number (e.g. subject.where_status_above / where_status_below / where_status_between / where_status {|s| s.even? })

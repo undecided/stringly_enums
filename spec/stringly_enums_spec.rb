@@ -57,11 +57,29 @@ describe StringlyEnums do
         subject.status = n
         expect(subject.status).to eq enum
       end
+
     end
   end
 
 
   context 'simple version with config' do
+
+    def self.test_configuration_key(config_key, value, &it_test)
+      context "when #{config_key} is #{value.inspect}" do
+        before do
+          dummy_class.reset_scopes
+          dummy_class.class_eval do
+            stringly_enum(
+              {status: [:first, :second, :third, :fourth]},
+              { config_key => value }
+            )
+          end
+        end
+        it "behaves correctly", &it_test
+      end
+    end
+
+
     {
       scopes: [
         ->(_) { expect(subject.class.fetch_scopes).to_not eq nil },
@@ -94,32 +112,35 @@ describe StringlyEnums do
         },
       ],
     }.each_pair do |config_key, (when_true, when_false)|
-      context "when #{config_key} is true" do
-        before do
-          dummy_class.reset_scopes
-          dummy_class.class_eval do
-            stringly_enum(
-              {status: [:first, :second, :third, :fourth]},
-              { config_key => true }
-            )
-          end
-        end
-        it "behaves correctly", &when_true
-      end
-
-      context "when #{config_key} is false" do
-        before do
-          dummy_class.reset_scopes
-          dummy_class.class_eval do
-            stringly_enum(
-              {status: [:first, :second, :third, :fourth]},
-              { config_key => false }
-            )
-          end
-        end
-        it "behaves correctly", &when_false
-      end
+      test_configuration_key(config_key, true, &when_true)
+      test_configuration_key(config_key, false, &when_false)
     end
+
+    test_configuration_key(:values, "enum_%s_vals_dawg") do
+      expect(subject.class).to respond_to :enum_status_vals_dawg
+    end
+
+    test_configuration_key(:values, nil) do
+      expect(subject.class).to respond_to :status_values
+    end
+
+    test_configuration_key(:values, false) do
+      expect(subject.class).to_not respond_to :status_values
+    end
+
+
+    test_configuration_key(:options, "enum_%s_opts_dawg") do
+      expect(subject.class).to respond_to :enum_status_opts_dawg
+    end
+
+    test_configuration_key(:options, nil) do
+      expect(subject.class).to respond_to :status_options
+    end
+
+    test_configuration_key(:options, false) do
+      expect(subject.class).to_not respond_to :status_options
+    end
+
   end
 
 
