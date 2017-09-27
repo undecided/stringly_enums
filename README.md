@@ -43,16 +43,20 @@ Assuming you've created an indexed string field on your model, called status, an
     # if you don't define your config first, it won't be seen.
     config.scopes = false            # model.class.first
 
-    config.allowable_values_as = "%s_values"   # any value we expect the database to contain
-                                               # will be available from this class method,
-                                               # e.g. MyModel.status_values
-                                               #      => 'first', '1st', 'second', etc
-                                               # useful in validations - false to disable
-    config.available_options_as = "%s_options" # any value the field should be set to
-                                               # will be available from this class method,
-                                               # e.g. MyModel.status_options
-                                               #      => :first, :second, :third, etc
-                                               # useful in drop-downs - false to disable
+    config.allowable_values_as = "%s_values"     # any value we expect the database to contain
+                                                 # will be available from this class method,
+                                                 # e.g. MyModel.status_values
+                                                 #      => 'first', '1st', 'second', etc
+                                                 # useful in validations - false to disable
+    config.available_options_as = "%s_options"   # any value the field should be set to
+                                                 # will be available from this class method,
+                                                 # e.g. MyModel.status_options
+                                                 #      => :first, :second, :third, etc
+                                                 # useful in drop-downs - false to disable
+    config.available_mappings_as = "%s_mappings" # the {integer => option} mappings
+                                                 # will be available from this class method,
+                                                 # e.g. MyModel.status_mappings
+                                                 #      => {0 => :first, 1 => :second, etc}
 
     config.boolean_getters = false   # model.first?
     config.bang_setters = false      # model.first!

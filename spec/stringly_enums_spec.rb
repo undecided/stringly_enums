@@ -70,7 +70,7 @@ describe StringlyEnums do
           dummy_class.reset_scopes
           dummy_class.class_eval do
             stringly_enum(
-              {status: [:first, :second, :third, :fourth]},
+              {status: {first: 4, second: 6, third: 8, fourth: 9}},
               { config_key => value }
             )
           end
@@ -98,8 +98,8 @@ describe StringlyEnums do
         ->(_) { expect(subject).to_not receive(:save) ; subject.first!},
       ],
       accessor: [
-        ->(_) { subject.status = 0; expect(subject).to be_first},
-        ->(_) { subject.status = 0; expect(subject).to_not be_first},
+        ->(_) { subject.status = 9; expect(subject).to be_fourth},
+        ->(_) { subject.status = 9; expect(subject).to_not be_fourth},
       ],
       prefix_methods: [
         ->(_) {
@@ -128,6 +128,7 @@ describe StringlyEnums do
       expect(subject.class).to_not respond_to :status_values
     end
 
+    # TODO: Test that the following configurations actually return sensible results!
 
     test_configuration_key(:available_options_as, "enum_%s_opts_dawg") do
       expect(subject.class).to respond_to :enum_status_opts_dawg
@@ -141,6 +142,17 @@ describe StringlyEnums do
       expect(subject.class).to_not respond_to :status_options
     end
 
+    test_configuration_key(:available_mappings_as, "enum_%s_mapz") do
+      expect(subject.class).to respond_to :enum_status_mapz
+    end
+
+    test_configuration_key(:available_mappings_as, nil) do
+      expect(subject.class).to_not respond_to :status_mappings
+    end
+
+    test_configuration_key(:available_mappings_as, false) do
+      expect(subject.class).to_not respond_to :status_mappings
+    end
   end
 
 

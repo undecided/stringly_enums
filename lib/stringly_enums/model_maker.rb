@@ -19,6 +19,14 @@ module StringlyEnums
 
     def self.post_build(klass, config, field)
       klass.instance_eval do
+
+        if config.available_mappings_as
+          available_mappings_method_name = config.available_mappings_as % field
+          define_singleton_method available_mappings_method_name do
+            config.available_options
+          end
+        end
+
         if config.available_options_as
           available_options_method_name = config.available_options_as % field
           define_singleton_method available_options_method_name do
@@ -32,6 +40,7 @@ module StringlyEnums
             config.allowable_values.values.flatten
           end
         end
+
 
         if config.accessor
           define_method(:"#{field}=") do |item|
