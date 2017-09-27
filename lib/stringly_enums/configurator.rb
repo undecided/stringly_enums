@@ -1,13 +1,17 @@
 module StringlyEnums
 
   class Configurator
-    METAPROGRAMMING = [:scopes, :boolean_getters, :bang_setters, :save_after_bang, :accessor]
-    TWEAKS = [:prefix_methods, :next_int]
+    METAPROGRAMMING = [:scopes, :allowable_values_as, :available_options_as, :boolean_getters, :bang_setters, :save_after_bang, :accessor]
+    TWEAKS = [:prefix_methods, :next_int, :allowable_values, :available_options]
     attr_accessor *(METAPROGRAMMING + TWEAKS)
+
+    DEFAULTS = {allowable_values_as: "%s_values", available_options_as: "%s_options"}
 
     def initialize
       enable_all_metaprogramming!
       @next_int = 0
+      @allowable_values = {}
+      @available_options = {}
       if block_given?
         yield self
       end
@@ -15,13 +19,13 @@ module StringlyEnums
 
     def enable_all_metaprogramming!
       METAPROGRAMMING.each do |attr|
-        send(:"#{attr}=", true)
+        send(:"#{attr}=", DEFAULTS.fetch(attr, true))
       end
     end
 
     def disable_all_metaprogramming!
-      METAPROGRAMMING.each do |attr, value|
-        send(:"#{attr}=", value)
+      METAPROGRAMMING.each do |attr|
+        send(:"#{attr}=", false)
       end
     end
 

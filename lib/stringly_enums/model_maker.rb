@@ -17,6 +17,33 @@ module StringlyEnums
       ModelMaker.add @klass, @config, @field, meth, next_int, aliases
     end
 
+    def self.post_build(klass, config, field)
+      klass.instance_eval do
+        if config.available_options_as
+          available_options_method_name = config.available_options_as % field
+          define_singleton_method available_options_method_name do
+            config.available_options.values.flatten
+          end
+        end
+
+        if config.allowable_values_as
+          allowable_values_method_name = config.allowable_values_as % field
+          define_singleton_method allowable_values_method_name do
+            config.allowable_values.values.flatten
+          end
+        end
+
+        if config.accessor
+          define_method(:"#{field}=") do |item|
+            return super(item) unless item.respond_to?(:to_i) && item.to_i == item
+            super(config.available_options[item])
+          end
+        end
+      end
+
+
+    end
+
     def self.add(klass, config, field, method, int = config.next_int, aliases = [])
       StringlyEnums.raise_backwards_error if int < config.next_int
       config.next_int = int + 1
@@ -25,6 +52,8 @@ module StringlyEnums
       method = "#{prefix}_#{method}" if prefix
       method = method.to_sym
       stored_values = [method, aliases].flatten
+      config.available_options[int] = method
+      config.allowable_values[int] = stored_values
 
       klass.instance_eval do
         scope method, -> { where(field => stored_values) } if config.scopes
@@ -39,15 +68,6 @@ module StringlyEnums
           define_method "#{method}!" do
             self.send(:"#{field}=", method)
             save if config.save_after_bang
-          end
-        end
-
-        # Not particularly efficient, if it even works...
-        if config.accessor && new.respond_to?(:"#{field}=") # Subverts rails lazy-loader
-          old_method = instance_method(:"#{field}=")
-          define_method(:"#{field}=") do |item|
-            return old_method.bind(self).call(method) if item == int
-            old_method.bind(self).call(item)
           end
         end
 

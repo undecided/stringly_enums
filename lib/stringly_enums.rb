@@ -14,6 +14,7 @@ module StringlyEnums
         config.merge!(options)
         if block
           block.call ModelMaker.new(klass, enumerable_fields, config), config
+          ModelMaker.post_build klass, config, enumerable_fields
         else
           enumerable_fields.each_pair do |field_name, enumerables|
             if enumerables.is_a? Hash
@@ -27,9 +28,11 @@ module StringlyEnums
             else
               raise ArgumentError, "stringly_enums arguments should be ordered `{fieldname: enums}, (opt) config` or `:fieldname, &block`"
             end
+            ModelMaker.post_build klass, config, field_name
           end
         end
       end
+
     end
   end
 

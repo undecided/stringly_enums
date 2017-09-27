@@ -116,28 +116,28 @@ describe StringlyEnums do
       test_configuration_key(config_key, false, &when_false)
     end
 
-    test_configuration_key(:values, "enum_%s_vals_dawg") do
+    test_configuration_key(:allowable_values_as, "enum_%s_vals_dawg") do
       expect(subject.class).to respond_to :enum_status_vals_dawg
     end
 
-    test_configuration_key(:values, nil) do
-      expect(subject.class).to respond_to :status_values
+    test_configuration_key(:allowable_values_as, nil) do
+      expect(subject.class).to_not respond_to :status_values
     end
 
-    test_configuration_key(:values, false) do
+    test_configuration_key(:allowable_values_as, false) do
       expect(subject.class).to_not respond_to :status_values
     end
 
 
-    test_configuration_key(:options, "enum_%s_opts_dawg") do
+    test_configuration_key(:available_options_as, "enum_%s_opts_dawg") do
       expect(subject.class).to respond_to :enum_status_opts_dawg
     end
 
-    test_configuration_key(:options, nil) do
-      expect(subject.class).to respond_to :status_options
+    test_configuration_key(:available_options_as, nil) do
+      expect(subject.class).to_not respond_to :status_options
     end
 
-    test_configuration_key(:options, false) do
+    test_configuration_key(:available_options_as, false) do
       expect(subject.class).to_not respond_to :status_options
     end
 

@@ -43,10 +43,16 @@ Assuming you've created an indexed string field on your model, called status, an
     # if you don't define your config first, it won't be seen.
     config.scopes = false            # model.class.first
 
-    config.values_name = "%s_values"   # any value the field can be set to
-                                       # useful in validations - false to disable
-    config.options_name = "%s_options" # any value the field should be set to
-                                       # useful in drop-downs - false to disable
+    config.allowable_values_as = "%s_values"   # any value we expect the database to contain
+                                               # will be available from this class method,
+                                               # e.g. MyModel.status_values
+                                               #      => 'first', '1st', 'second', etc
+                                               # useful in validations - false to disable
+    config.available_options_as = "%s_options" # any value the field should be set to
+                                               # will be available from this class method,
+                                               # e.g. MyModel.status_options
+                                               #      => :first, :second, :third, etc
+                                               # useful in drop-downs - false to disable
 
     config.boolean_getters = false   # model.first?
     config.bang_setters = false      # model.first!
@@ -56,7 +62,7 @@ Assuming you've created an indexed string field on your model, called status, an
     config.enable_all_metaprogramming!  # Turns on all of the above (the default)
     config.prefix_methods = true   # model.status_first?
     status.first int: 0, stored_as: '1st' # new values will be stored as 'first'
-    status.second int: 1, stored_as: %w[2nd sec deuxieme]
+    status.second int: 1, stored_as: ['2nd', 'sec' 'le deuxieme']
     status.third int: 3, stored_as: 'therd'
     status.fourth # int will be 4, stored as 'fourth'
   end
