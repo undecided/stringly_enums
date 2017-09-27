@@ -71,7 +71,6 @@ Assuming you've created an indexed string field on your model, called status, an
 
 
 ## V2 TODO
-- where can I get all the valid statuses?
 - assuming string storage, always return symbols
 - An easy way to switch name / number (e.g. subject.status_int)
 - A way to search by number (e.g. subject.where_status_above / where_status_below / where_status_between / where_status {|s| s.even? })
