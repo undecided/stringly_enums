@@ -190,6 +190,31 @@ describe StringlyEnums do
         expect(subject.class).to_not respond_to :status_mappings
       end
     end
+
+    context "multi-status" do
+      test_default_configuration do
+        expect { subject.status = [:first, 8] }.to raise StringlyEnums::ConfigurationError
+      end
+
+      test_configuration_key(:multi, true) do
+        subject.status = 1
+        expect(subject.status).to eq [:first]
+
+        subject.fourth!
+        expect(subject.status).to eq [:first, :fourth]
+
+        expect { subject.status = [:first, 8] }.to_not raise StringlyEnums::ConfigurationError
+        expect(subject.status).to eq [:first, :third]
+      end
+
+      test_configuration_key(:multi, nil) do
+        expect { subject.status = [:first, 8] }.to raise StringlyEnums::ConfigurationError
+      end
+
+      test_configuration_key(:multi, false) do
+        expect { subject.status = [:first, 8] }.to raise StringlyEnums::ConfigurationError
+      end
+    end
   end
 
 

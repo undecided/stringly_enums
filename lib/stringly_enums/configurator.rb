@@ -2,8 +2,8 @@ module StringlyEnums
 
   class Configurator
     METAPROGRAMMING = [:scopes, :allowable_values_as, :available_options_as, :available_mappings_as, :boolean_getters, :bang_setters, :save_after_bang, :accessor]
-    TWEAKS = [:prefix_methods, :next_int, :allowable_values, :available_options]
-    attr_accessor *(METAPROGRAMMING + TWEAKS)
+    TWEAKS = [:prefix_methods, :next_int, :allowable_values, :available_options, :multi]
+    attr_accessor(*(METAPROGRAMMING + TWEAKS))
 
     DEFAULTS = {allowable_values_as: "%s_values", available_options_as: "%s_options", available_mappings_as: "%s_mappings"}
 

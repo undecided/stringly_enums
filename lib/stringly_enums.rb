@@ -1,8 +1,19 @@
 require "stringly_enums/version"
 require "stringly_enums/configurator"
+require "stringly_enums/metaprogramming_factory"
 require "stringly_enums/model_maker"
 
 module StringlyEnums
+  class ConfigurationError < StandardError; end
+  class IntegerClashError < StandardError; end
+
+  def self.int_clash!(int, enum, config)
+    redefining = config.available_options[int].inspect
+    raise IntegerClashError, "The integer #{int} has already been used" \
+                             "- already defined as #{redefining}, " \
+                             "could not redefine as #{enum})"
+  end
+
   class Main
     class << self
       def stored_config
@@ -17,22 +28,14 @@ module StringlyEnums
         config = build_config
         config.merge!(options)
         if block
-          block.call ModelMaker.new(klass, enumerable_fields, config), config
-          ModelMaker.post_build klass, config, enumerable_fields
+          builder = ModelMaker.new(klass, config, enumerable_fields)
+          block.call builder, config
+          builder.finish!
         else
           enumerable_fields.each_pair do |field_name, enumerables|
-            if enumerables.is_a? Hash
-              enumerables.each_pair do |enum_name, int|
-                ModelMaker.add klass, config, field_name, enum_name, int
-              end
-            elsif enumerables.is_a? Array
-              enumerables.each do |enum_name|
-                ModelMaker.add klass, config, field_name, enum_name
-              end
-            else
-              raise ArgumentError, "stringly_enums arguments should be ordered `{fieldname: enums}, (opt) config` or `:fieldname, &block`"
-            end
-            ModelMaker.post_build klass, config, field_name
+            builder = MetaprogrammingFactory.new(klass, config, field_name)
+            builder.add_all(enumerables)
+            builder.finish!
           end
         end
       end
