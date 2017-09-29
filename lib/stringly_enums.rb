@@ -5,8 +5,12 @@ require "stringly_enums/model_maker"
 module StringlyEnums
   class Main
     class << self
+      def stored_config
+        nil # use when we pre-configure
+      end
+
       def build_config
-        (@config ||= Configurator.new).dup
+        (stored_config || Configurator.new).dup
       end
 
       def build(klass, enumerable_fields, options, &block)

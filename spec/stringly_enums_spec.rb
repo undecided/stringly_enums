@@ -79,6 +79,20 @@ describe StringlyEnums do
       end
     end
 
+    def self.test_default_configuration(&it_test)
+      context "when using the default config" do
+        before do
+          dummy_class.reset_scopes
+          dummy_class.class_eval do
+            stringly_enum(
+              {status: {first: 4, second: 6, third: 8, fourth: 9}}
+            )
+          end
+        end
+        it "behaves correctly", &it_test
+      end
+    end
+
 
     {
       scopes: [
@@ -116,42 +130,65 @@ describe StringlyEnums do
       test_configuration_key(config_key, false, &when_false)
     end
 
-    test_configuration_key(:allowable_values_as, "enum_%s_vals_dawg") do
-      expect(subject.class).to respond_to :enum_status_vals_dawg
-    end
+    context "allowable_values" do
+      test_default_configuration do
+        expect(subject.class).to respond_to :status_values
+        expect(subject.class.status_values).to eq [:first, :second, :third, :fourth]
+      end
 
-    test_configuration_key(:allowable_values_as, nil) do
-      expect(subject.class).to_not respond_to :status_values
-    end
+      test_configuration_key(:allowable_values_as, "enum_%s_vals_dawg") do
+        expect(subject.class).to respond_to :enum_status_vals_dawg
+        expect(subject.class.enum_status_vals_dawg).to eq [:first, :second, :third, :fourth]
+      end
 
-    test_configuration_key(:allowable_values_as, false) do
-      expect(subject.class).to_not respond_to :status_values
+      test_configuration_key(:allowable_values_as, nil) do
+        expect(subject.class).to_not respond_to :status_values
+      end
+
+      test_configuration_key(:allowable_values_as, false) do
+        expect(subject.class).to_not respond_to :status_values
+      end
     end
 
     # TODO: Test that the following configurations actually return sensible results!
+    context "available_options" do
+      test_default_configuration do
+        expect(subject.class).to respond_to :status_options
+        expect(subject.class.status_options).to eq [:first, :second, :third, :fourth]
+      end
 
-    test_configuration_key(:available_options_as, "enum_%s_opts_dawg") do
-      expect(subject.class).to respond_to :enum_status_opts_dawg
+      test_configuration_key(:available_options_as, "enum_%s_opts_dawg") do
+        expect(subject.class).to respond_to :enum_status_opts_dawg
+        expect(subject.class.enum_status_opts_dawg).to eq [:first, :second, :third, :fourth]
+      end
+
+      test_configuration_key(:available_options_as, nil) do
+        expect(subject.class).to_not respond_to :status_options
+      end
+
+      test_configuration_key(:available_options_as, false) do
+        expect(subject.class).to_not respond_to :status_options
+      end
     end
 
-    test_configuration_key(:available_options_as, nil) do
-      expect(subject.class).to_not respond_to :status_options
-    end
+    context "available_mappings" do
+      test_default_configuration do
+        expect(subject.class).to respond_to :status_mappings
+        expect(subject.class.status_mappings).to eq(4=>:first, 6=>:second, 8=>:third, 9=>:fourth)
+      end
 
-    test_configuration_key(:available_options_as, false) do
-      expect(subject.class).to_not respond_to :status_options
-    end
+      test_configuration_key(:available_mappings_as, "enum_%s_mapz") do
+        expect(subject.class).to respond_to :enum_status_mapz
+        expect(subject.class.enum_status_mapz).to eq(4=>:first, 6=>:second, 8=>:third, 9=>:fourth)
+      end
 
-    test_configuration_key(:available_mappings_as, "enum_%s_mapz") do
-      expect(subject.class).to respond_to :enum_status_mapz
-    end
+      test_configuration_key(:available_mappings_as, nil) do
+        expect(subject.class).to_not respond_to :status_mappings
+      end
 
-    test_configuration_key(:available_mappings_as, nil) do
-      expect(subject.class).to_not respond_to :status_mappings
-    end
-
-    test_configuration_key(:available_mappings_as, false) do
-      expect(subject.class).to_not respond_to :status_mappings
+      test_configuration_key(:available_mappings_as, false) do
+        expect(subject.class).to_not respond_to :status_mappings
+      end
     end
   end
 
