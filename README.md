@@ -41,7 +41,7 @@ Assuming you've created an indexed string field on your model, called status, an
     # The config below can be used in the config hashes above
     # Please note: currently, in block-based config, order matters -
     # if you don't define your config first, it won't be seen.
-    config.scopes = false            # model.class.first
+    config.scopes = true            # model.class.first
 
     config.allowable_values_as = "%s_values"     # any value we expect the database to contain
                                                  # will be available from this class method,
@@ -58,13 +58,16 @@ Assuming you've created an indexed string field on your model, called status, an
                                                  # e.g. MyModel.status_mappings
                                                  #      => {0 => :first, 1 => :second, etc}
 
-    config.boolean_getters = false   # model.first?
-    config.bang_setters = false      # model.first!
-    config.save_after_bang = false   # model.first! => self.status = :first; save
-    config.accessor = false          # model.status = 1
+    config.boolean_getters = true   # model.first?
+    config.bang_setters = true      # model.first!
+    config.save_after_bang = true   # model.first! => self.status = :first; save
+    config.accessor = true          # model.status = 1
+                                    # modl.status #=> :first (instead of 'first')
+                                    # you will definitely want this if multi=true
     config.disable_all_metaprogramming! # Turns off all of the above
     config.enable_all_metaprogramming!  # Turns on all of the above (the default)
-    config.prefix_methods = true   # model.status_first?
+    config.multi = true              # model.status = [1, :second]
+    config.prefix_methods = true     # model.status_first?
     status.first int: 0, stored_as: '1st' # new values will be stored as 'first'
     status.second int: 1, stored_as: ['2nd', 'sec' 'le deuxieme']
     status.third int: 3, stored_as: 'therd'
@@ -73,6 +76,11 @@ Assuming you've created an indexed string field on your model, called status, an
 
 ```
 
+## Migrating to multi mode
+
+Gotchas:
+- bang_setters append, they do not replace.
+- Trying to use multi mode and config.bang_setters requires config.accessor to be true (default). Otherwise, here be dragons.
 
 ## V2 TODO
 - assuming string storage, always return symbols

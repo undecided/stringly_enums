@@ -193,26 +193,26 @@ describe StringlyEnums do
 
     context "multi-status" do
       test_default_configuration do
-        expect { subject.status = [:first, 8] }.to raise StringlyEnums::ConfigurationError
+        expect { subject.status = [:first, 8] }.to raise_error StringlyEnums::ConfigurationError
       end
 
       test_configuration_key(:multi, true) do
-        subject.status = 1
+        subject.status = 4
         expect(subject.status).to eq [:first]
 
         subject.fourth!
         expect(subject.status).to eq [:first, :fourth]
 
-        expect { subject.status = [:first, 8] }.to_not raise StringlyEnums::ConfigurationError
+        expect { subject.status = [:first, 8] }.to_not raise_error StringlyEnums::ConfigurationError
         expect(subject.status).to eq [:first, :third]
       end
 
       test_configuration_key(:multi, nil) do
-        expect { subject.status = [:first, 8] }.to raise StringlyEnums::ConfigurationError
+        expect { subject.status = [:first, 8] }.to raise_error StringlyEnums::ConfigurationError
       end
 
       test_configuration_key(:multi, false) do
-        expect { subject.status = [:first, 8] }.to raise StringlyEnums::ConfigurationError
+        expect { subject.status = [:first, 8] }.to raise_error StringlyEnums::ConfigurationError
       end
     end
   end

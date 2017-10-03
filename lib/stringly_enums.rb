@@ -1,5 +1,6 @@
 require "stringly_enums/version"
 require "stringly_enums/configurator"
+require "stringly_enums/multi_serializer"
 require "stringly_enums/abstract_metaprogrammer"
 require "stringly_enums/per_field_metaprogrammer"
 require "stringly_enums/per_enum_metaprogrammer"

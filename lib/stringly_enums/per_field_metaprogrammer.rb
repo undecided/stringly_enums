@@ -1,4 +1,7 @@
+require 'json'
+
 module StringlyEnums
+
   class PerFieldMetaprogrammer < AbstractMetaprogrammer
 
     def run!
@@ -28,11 +31,23 @@ module StringlyEnums
 
     private def build_accessor
       int_translator = config.available_options
-      new_instance_method(:"#{field}=") do |item|
-        item = int_translator[item] if item.respond_to?(:to_i) && item.to_i == item
-        super(item)
+      if config.multi
+        new_instance_method(:"#{field}=") do |items|
+          items = [items] unless items.is_a?(Array)
+          items.map! {|item| (item.respond_to?(:to_i) && item.to_i == item) ? int_translator[item] : item }
+          super(StringlyEnums::MultiSerializer.serialize(items))
+        end
+
+        new_instance_method(field) do
+          StringlyEnums::MultiSerializer.parse(super()).map(&:to_sym)
+        end
+      else
+        new_instance_method(:"#{field}=") do |item|
+          raise StringlyEnums::ConfigurationError, "Cannot assign array to an enum unless enum configured with config.multi = true" if item.is_a?(Array)
+          item = int_translator[item] if item.respond_to?(:to_i) && item.to_i == item
+          super(item)
+        end
       end
     end
-
   end
 end
