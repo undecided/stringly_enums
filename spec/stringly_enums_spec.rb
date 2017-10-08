@@ -203,8 +203,14 @@ describe StringlyEnums do
         subject.fourth!
         expect(subject.status).to eq [:first, :fourth]
 
-        expect { subject.status = [:first, 8] }.to_not raise_error StringlyEnums::ConfigurationError
+        expect { subject.status = [:first, 8] }.to_not raise_error
         expect(subject.status).to eq [:first, :third]
+
+        expect(subject).to have_status(:first)
+        expect(subject).to have_status(:third)
+
+        subject.remove_status!(:first)
+        expect(subject).to_not have_status(:first)
       end
 
       test_configuration_key(:multi, nil) do

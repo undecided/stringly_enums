@@ -78,8 +78,15 @@ Assuming you've created an indexed string field on your model, called status, an
 
 ## Migrating to multi mode
 
-Gotchas:
+### Features:
+
+You get the following extras in multi-mode:
+
+- has_FIELDNAME? (e.g. has_status?(:first))
+- remove_FIELDNAME! (e.g. remove_status!(:first))
 - bang_setters append, they do not replace.
+
+Gotchas:
 - Trying to use multi mode and config.bang_setters requires config.accessor to be true (default). Otherwise, here be dragons.
 
 ## V2 TODO
