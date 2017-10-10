@@ -93,8 +93,8 @@ Gotchas:
 - assuming string storage, always return symbols
 - An easy way to switch name / number (e.g. subject.status_int)
 - A way to search by number (e.g. subject.where_status_above / where_status_below / where_status_between / where_status {|s| s.even? })
+- Should create an anonymous module then mix it in (not sure super() behaves correctly)
 - The gem should be configurable site-wide, e.g. in an initializer, as follows:
-
 ```
 StringlyEnum.configure do |config| # ... config used as above
 ```

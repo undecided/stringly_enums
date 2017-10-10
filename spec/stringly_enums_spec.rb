@@ -197,6 +197,7 @@ describe StringlyEnums do
       end
 
       test_configuration_key(:multi, true) do
+        expect(subject.status).to eq []
         subject.status = 4
         expect(subject.status).to eq [:first]
 
@@ -211,6 +212,7 @@ describe StringlyEnums do
 
         subject.remove_status!(:first)
         expect(subject).to_not have_status(:first)
+
       end
 
       test_configuration_key(:multi, nil) do
