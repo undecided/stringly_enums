@@ -83,6 +83,7 @@ Assuming you've created an indexed string field on your model, called status, an
 You get the following extras in multi-mode:
 
 - has_FIELDNAME? (e.g. has_status?(:first))
+- has_any_FIELDNAME? (e.g. has_any_status?(:first, :second, :fifth))
 - remove_FIELDNAME! (e.g. remove_status!(:first))
 - bang_setters append, they do not replace.
 
