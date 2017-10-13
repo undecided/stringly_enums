@@ -6,7 +6,7 @@ module StringlyEnums
 
     class << self
       def parse(str)
-        return [] if str.nil?
+        return [] if str.nil? || str.to_s.strip == ''
         return [str] unless str[UNWRAPPER]
         str.scan(UNWRAPPER).flatten.map(&:to_sym)
       end
