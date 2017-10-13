@@ -224,8 +224,15 @@ describe StringlyEnums do
         expect(subject).to have_any_status(:third, :eighth)
         expect(subject).to_not have_any_status(:second, :eighth)
 
+        subject.status = [:first]
         subject.remove_status!(:first)
         expect(subject).to_not have_status(:first)
+
+        subject.add_status!(:first)
+        expect(subject).to have_status(:first)
+
+        subject.add_status!(:second)
+        expect(subject.status).to eq([:first, :second])
 
       end
 

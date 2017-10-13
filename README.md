@@ -84,6 +84,7 @@ You get the following extras in multi-mode:
 
 - has_FIELDNAME? (e.g. has_status?(:first))
 - has_any_FIELDNAME? (e.g. has_any_status?(:first, :second, :fifth))
+- add_FIELDNAME! (e.g. add_status!(:first))
 - remove_FIELDNAME! (e.g. remove_status!(:first))
 - bang_setters append, they do not replace.
 

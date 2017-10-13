@@ -55,6 +55,11 @@ module StringlyEnums
           send(:"#{field}=", send(field) - [status.to_sym])
           save if config.save_after_bang
         end
+
+        new_instance_method(:"add_#{field}!") do |status|
+          send(:"#{field}=", send(field) + [status.to_sym])
+          save if config.save_after_bang
+        end
       else
         new_instance_method(:"#{field}=") do |item|
           raise StringlyEnums::ConfigurationError, 'Cannot assign array to an enum unless enum configured with config.multi = true' if item.is_a?(Array)
