@@ -46,6 +46,11 @@ module StringlyEnums
           send(:"#{field}").include? status.to_sym
         end
 
+        new_instance_method(:"has_any_#{field}?") do |*status|
+          cached = send(:"#{field}")
+          status.find { |stat| cached.include? stat.to_sym }
+        end
+
         new_instance_method(:"remove_#{field}!") do |status|
           send(:"#{field}=", send(field) - [status.to_sym])
           save if config.save_after_bang

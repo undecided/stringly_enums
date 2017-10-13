@@ -197,18 +197,32 @@ describe StringlyEnums do
       end
 
       test_configuration_key(:multi, true) do
+        subject.instance_variable_set(:"@status", nil)
         expect(subject.status).to eq []
+        subject.instance_variable_set(:"@status", :second)
+        expect(subject.status).to eq [:second]
+        expect(subject).to be_second
+
         subject.status = 4
         expect(subject.status).to eq [:first]
 
         subject.fourth!
         expect(subject.status).to eq [:first, :fourth]
+        expect(subject).to be_first
+        expect(subject).to be_fourth
 
         expect { subject.status = [:first, 8] }.to_not raise_error
         expect(subject.status).to eq [:first, :third]
-
+        expect(subject).to be_first
         expect(subject).to have_status(:first)
+        expect(subject).to be_third
         expect(subject).to have_status(:third)
+        expect(subject).to_not be_fourth
+        expect(subject).to_not have_status(:fourth)
+
+        expect(subject).to have_any_status(:eighth, :first)
+        expect(subject).to have_any_status(:third, :eighth)
+        expect(subject).to_not have_any_status(:second, :eighth)
 
         subject.remove_status!(:first)
         expect(subject).to_not have_status(:first)

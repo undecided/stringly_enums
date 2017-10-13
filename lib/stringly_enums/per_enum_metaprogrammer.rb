@@ -53,6 +53,12 @@ module StringlyEnums
       end
     end
 
+    private def build_boolean_getter(field, method_name, stored_values)
+      new_instance_method("#{method_name}?") do
+        !!send(field).find { |item| stored_values.include? item }
+      end
+    end
+
     private def build_bang_setter(field, method_name, new_value)
       saveable = config.save_after_bang
       new_instance_method("#{method_name}!") do
